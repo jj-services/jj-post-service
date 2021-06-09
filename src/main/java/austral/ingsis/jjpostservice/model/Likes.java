@@ -34,4 +34,20 @@ public class Likes {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
+
+    public Long getLikedByUserId() {
+        return likedByUserId;
+    }
+
+    public void setLikedByUserId(Long likedByUserId) {
+        this.likedByUserId = likedByUserId;
+    }
 }

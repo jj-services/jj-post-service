@@ -6,7 +6,6 @@ import austral.ingsis.jjpostservice.dto.UpdatePostDto;
 import austral.ingsis.jjpostservice.exception.PostNotFoundException;
 import austral.ingsis.jjpostservice.model.Post;
 import austral.ingsis.jjpostservice.service.PostService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

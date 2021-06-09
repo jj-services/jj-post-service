@@ -2,57 +2,93 @@ package austral.ingsis.jjpostservice.controller;
 
 import austral.ingsis.jjpostservice.dto.CreatePostDto;
 import austral.ingsis.jjpostservice.dto.PostDto;
+import austral.ingsis.jjpostservice.dto.UpdatePostDto;
+import austral.ingsis.jjpostservice.exception.PostNotFoundException;
 import austral.ingsis.jjpostservice.model.Post;
 import austral.ingsis.jjpostservice.service.PostService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController(value = "/posts") //todo check
+@RestController()
+@RequestMapping("/api/posts")
 public class PostController {
 
-    private PostService postService;
+    private final PostService postService;
 
     @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
     }
 
-    @PostMapping(value = "") //change after mapping is solved
-    public ResponseEntity<Post> createPost(@RequestBody CreatePostDto createPostDto) {
-        Post post = this.postService.savePost(this.mapDtoToModel(createPostDto));
-        //TODO response headers
-        //TODO add more validations like bad request
+    @PostMapping(value = "")
+    public ResponseEntity<PostDto> createPost(@RequestBody CreatePostDto createPostDto) {
+        PostDto post = this.postService.savePost(this.mapDtoToModel(createPostDto));
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "") //later add path variable id when getallposts by id is done
-    public ResponseEntity<List<PostDto>> getAllPosts( ) {
-        List<PostDto> users = this.postService.getAllPosts();
-        //TODO response headers
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @GetMapping(value = "/user/{userId}")
+    public ResponseEntity<List<PostDto>> getAllPostsByUserId(@PathVariable Long userId) {
+        List<PostDto> posts = this.postService.getAllPostsByUserId(userId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    private Post mapDtoToModel(CreatePostDto postDto) {
-        Post post = new Post();
-//        post.setId(postDto.getPostId());
-        post.setText(postDto.getText());
-//        post.setUserId(postDto.getUserDto().getUserId());
-        return post;
+    @GetMapping(value = "")
+    public ResponseEntity<List<PostDto>> getAllPosts() {
+        List<PostDto> posts = this.postService.getAllPosts();
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
+        try {
+            PostDto postDto = this.postService.getPostById(id);
+            return new ResponseEntity<>(postDto, HttpStatus.OK);
+        } catch (PostNotFoundException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping(value = "")
+    public ResponseEntity<PostDto> updatePost(@RequestBody UpdatePostDto dto) {
+        try {
+            PostDto updated = this.postService.updatePost(dto.getPostId(), dto.getText());
+            return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (PostNotFoundException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
+        try {
+            this.postService.deletePost(id);
+            return new ResponseEntity<>("Deleted post of id: " + id + ".", HttpStatus.OK);
+        } catch (PostNotFoundException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     private Post mapDtoToModel(PostDto postDto) {
         Post post = new Post();
         post.setId(postDto.getPostId());
         post.setText(postDto.getText());
-        post.setUserId(postDto.getUserDto().getUserId());
+        post.setUserId(postDto.getUserId());
         return post;
     }
+
+    private Post mapDtoToModel(CreatePostDto postDto) {
+        Post post = new Post();
+        post.setText(postDto.getText());
+        post.setUserId(post.getUserId());
+        return post;
+    }
+
 }

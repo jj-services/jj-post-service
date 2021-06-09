@@ -1,6 +1,7 @@
 package austral.ingsis.jjpostservice.service;
 
 import austral.ingsis.jjpostservice.dto.PostDto;
+import austral.ingsis.jjpostservice.exception.PostNotFoundException;
 import austral.ingsis.jjpostservice.model.Post;
 import austral.ingsis.jjpostservice.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,16 +25,50 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    //get all posts should be done by user id
     public List<PostDto> getAllPosts() {
-//        List<Post> posts = this.postRepository.findAll(); TODO check mapping to dto when get is done to users
-//        return posts.stream().map(p -> p.toPostDto()).collect(Collectors.toList());
-        return new ArrayList<>();
+        return this.postRepository.findAll().stream()
+                .map(Post::toPostDto).collect(Collectors.toList());
     }
 
-    public Post savePost(Post post) {
-        return this.postRepository.save(post); //add mapping to dto later
+    public List<PostDto> getAllPostsByUserId(Long userId) {
+        return this.postRepository.findAll().stream()
+                .filter(p -> p.getUserId().equals(userId))
+                .map(Post::toPostDto).collect(Collectors.toList());
+    }
+
+    public PostDto savePost(Post post) {
+        return this.postRepository.save(post).toPostDto();
     }
 
 
+    public PostDto getPostById(Long id) {
+        Optional<Post> post = this.postRepository.findById(id);
+
+        if (post.isPresent()) {
+            return post.get().toPostDto();
+        }
+
+        throw new PostNotFoundException("Post of id: " + id + "not found.");
+    }
+
+    public PostDto updatePost(Long postId, String text) {
+        Optional<Post> post = this.postRepository.findById(postId);
+
+        if (post.isEmpty()) {
+            throw new PostNotFoundException("Post of id: " + postId + "not found.");
+        }
+
+        Post toSave = post.get();
+        toSave.setText(text);
+
+        return this.postRepository.save(toSave).toPostDto();
+    }
+
+    public void deletePost(Long id) {
+        Optional<Post> post = this.postRepository.findById(id);
+        if(post.isEmpty()) {
+            throw new PostNotFoundException("Post of id: " + id  + "not found.");
+        }
+        this.postRepository.deleteById(id);
+    }
 }

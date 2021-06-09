@@ -1,13 +1,12 @@
 package austral.ingsis.jjpostservice.model;
 
-import austral.ingsis.jjpostservice.dto.PostDto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
-public class Post {
+public class Likes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceUserGenerator")
@@ -22,19 +21,11 @@ public class Post {
     )
     private Long id;
 
-    @Column(name = "text")
-    private String text;
+    @Column(name = "post_id")
+    private Long postId;
 
-    @Column(name = "user_id")
-    private Long userId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    @Column(name = "liked_by_user_id")
+    private Long likedByUserId;
 
     public Long getId() {
         return id;
@@ -42,18 +33,5 @@ public class Post {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-
-    public PostDto toPostDto() {
-        return new PostDto(this.id, this.text, this.userId);
     }
 }

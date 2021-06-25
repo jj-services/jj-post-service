@@ -21,14 +21,14 @@ services:
     container_name: postgres_db_posts
     image: postgres:12
     ports:
-      - 5434:5434
+      - 5434:5432
     environment:
       POSTGRES_USER: jibberjabber
       POSTGRES_PASSWORD: jibberjabber
       POSTGRES_DB: jibberjabberdb_posts
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postData:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
+  postData:
     external: true

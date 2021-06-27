@@ -86,7 +86,7 @@ public class PostController {
     private Post mapDtoToModel(CreatePostDto postDto) {
         Post post = new Post();
         post.setText(postDto.getText());
-        post.setUserId(post.getUserId());
+        post.setUserId(postDto.getUserId());
         return post;
     }
 

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController()
@@ -30,11 +31,13 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/user/{userId}")
-    public ResponseEntity<List<PostDto>> getAllPostsByUserId(@PathVariable Long userId) {
-        List<PostDto> posts = this.postService.getAllPostsByUserId(userId);
-        return new ResponseEntity<>(posts, HttpStatus.OK);
-    }
+//    @GetMapping(value = "/user/{userId}")
+//    public ResponseEntity<List<PostDto>> getAllPostsByUserId(@PathVariable Long userId) {
+//        //list user id al otro servicio
+//        List<Long> userIds = new ArrayList<>();
+//        List<PostDto> posts = this.postService.getAllPostsByFollowingIds(userIds);
+//        return new ResponseEntity<>(posts, HttpStatus.OK);
+//    }
 
     @GetMapping(value = "")
     public ResponseEntity<List<PostDto>> getAllPosts() {
@@ -52,6 +55,11 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+
+//    @GetMapping(value = "/{userId}")
+//    public ResponseEntity<List<PostDto>> getAllPostsByUserId(@PathVariable Long userId) {
+//        List<PostDto> posts = this.postService.getAllPostsByUserId(userId);
+//    }
 
     @PutMapping(value = "")
     public ResponseEntity<PostDto> updatePost(@RequestBody UpdatePostDto dto) {
@@ -86,7 +94,7 @@ public class PostController {
     private Post mapDtoToModel(CreatePostDto postDto) {
         Post post = new Post();
         post.setText(postDto.getText());
-        post.setUserId(post.getUserId());
+        post.setUserId(postDto.getUserId());
         return post;
     }
 

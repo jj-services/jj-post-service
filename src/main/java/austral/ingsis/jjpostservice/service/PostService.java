@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,5 +71,9 @@ public class PostService {
             throw new PostNotFoundException("Post of id: " + id  + "not found.");
         }
         this.postRepository.deleteById(id);
+    }
+
+    public List<Post> getAllPostsByFollowingIds(List<Long> userIds) {
+        return new ArrayList<>();
     }
 }

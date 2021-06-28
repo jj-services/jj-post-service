@@ -1,5 +1,6 @@
 package austral.ingsis.jjpostservice.service;
 
+import austral.ingsis.jjpostservice.dto.LikeDto;
 import austral.ingsis.jjpostservice.exception.PostNotFoundException;
 import austral.ingsis.jjpostservice.model.Likes;
 import austral.ingsis.jjpostservice.model.Post;
@@ -21,7 +22,7 @@ public class LikesService {
     }
 
 
-    public Likes likePost(Long postId, Long likedByUserId) {
+    public LikeDto likePost(Long postId, Long likedByUserId) {
         Optional<Post> post = this.postRepository.findById(postId);
 
         if (post.isEmpty()) {
@@ -32,7 +33,7 @@ public class LikesService {
         likeRelation.setPostId(postId);
         likeRelation.setLikedByUserId(likedByUserId);
 
-        return this.likesRepository.save(likeRelation);
+        return this.likesRepository.save(likeRelation).toLikeDto();
     }
 
     public void unlikePostByRelationId(Long id) {

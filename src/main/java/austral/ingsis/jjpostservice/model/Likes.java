@@ -1,5 +1,6 @@
 package austral.ingsis.jjpostservice.model;
 
+import austral.ingsis.jjpostservice.dto.LikeDto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -49,5 +50,9 @@ public class Likes {
 
     public void setLikedByUserId(Long likedByUserId) {
         this.likedByUserId = likedByUserId;
+    }
+
+    public LikeDto toLikeDto() {
+        return new LikeDto(this.postId, this.likedByUserId);
     }
 }

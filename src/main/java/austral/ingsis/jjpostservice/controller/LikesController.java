@@ -24,7 +24,7 @@ public class LikesController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<String> likePost(@PathVariable Long id, @RequestBody Long userId) {
         try {
-            //TODO try getting user or else unauthorized, hardcodear
+            //TODO try getting user or else unauthorized
             LikeDto resultDto = this.likesService.likePost(id, userId);
             //de gede nomas pero podria ser void
             return new ResponseEntity<>("Post of id: " + resultDto.getPostId() + " liked by user of id: " + resultDto.getLikedByUserId(), HttpStatus.CREATED);

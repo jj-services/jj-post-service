@@ -27,10 +27,10 @@ import org.springframework.http.HttpHeaders;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    @Value("${users_service_host}")
+    @Value("${users_service.host}")
     private String usersServiceHost;
 
-    @Value("${users_service_port}")
+    @Value("${users_service.port}")
     private String usersServicePort;
 
     private final String url = "http://" + this.usersServiceHost + ":" + this.usersServicePort + "/api/users/authenticateUser";

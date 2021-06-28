@@ -18,10 +18,10 @@ import java.util.List;
 
 @Component
 public class UserConnectionHandler {
-    @Value("${users_service_host}")
+    @Value("${users_service.host}")
     private String usersServiceHost;
 
-    @Value("${users_service_port}")
+    @Value("${users_service.port}")
     private String usersServicePort;
 
     public UserDto getTokenUserInformation() {

@@ -33,7 +33,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Value("${users_service.port}")
     private String usersServicePort;
 
-    private final String url = "http://" + this.usersServiceHost + ":" + this.usersServicePort + "/api/users/authenticateUser";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -56,13 +55,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private UserDto validateUserAuthentication(String token) throws URISyntaxException {
         RestTemplate restTemplate = new RestTemplate();
+        final String url = "http://" + this.usersServiceHost + ":" + this.usersServicePort + "/api/users/me";
+        final String cookieHeader = SecurityConstants.COOKIE_NAME+"="+token;
         URI getUserUri = new URI(url);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Cookie", token);
+        headers.add("Cookie", cookieHeader);
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
         ResponseEntity<UserDto> response = restTemplate.exchange(getUserUri, HttpMethod.GET, httpEntity, UserDto.class);
+
+
         if (response.getStatusCodeValue() != 200) throw new AuthenticationException("Server could not authenticate request");
         return response.getBody();
     }

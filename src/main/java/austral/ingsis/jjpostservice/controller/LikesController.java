@@ -21,11 +21,11 @@ public class LikesController {
     }
 
     //like
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<String> likePost(@PathVariable Long id, @RequestBody Long userId) {
+    @PostMapping(value = "")
+    public ResponseEntity<String> likePost(@RequestBody LikeDto likeData) {
         try {
             //TODO try getting user or else unauthorized, hardcodear
-            LikeDto resultDto = this.likesService.likePost(id, userId);
+            LikeDto resultDto = this.likesService.likePost(likeData.getPostId(), likeData.getLikedByUserId());
             //de gede nomas pero podria ser void
             return new ResponseEntity<>("Post of id: " + resultDto.getPostId() + " liked by user of id: " + resultDto.getLikedByUserId(), HttpStatus.CREATED);
         } catch (AuthenticationException e) {
@@ -35,11 +35,11 @@ public class LikesController {
         }
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> unlikePost(@PathVariable Long id) {
+    @DeleteMapping(value = "")
+    public ResponseEntity<String> unlikePost(@RequestBody LikeDto likeData) {
         try {
-            this.likesService.unlikePostByRelationId(id);
-            return new ResponseEntity<>("Deleted relation of id: " + id, HttpStatus.OK);
+            this.likesService.unlikePostByBothIds(likeData.getPostId(), likeData.getLikedByUserId());
+            return new ResponseEntity<>("Deleted relation of id: " + likeData.getPostId(), HttpStatus.OK);
         } catch (PostNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

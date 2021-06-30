@@ -49,9 +49,9 @@ public class UserConnectionHandler {
         return response.getBody();
     }
 
-    public List<UserDto> getFollowedUsersById() throws URISyntaxException {
+    public List<UserDto> getFollowedUsersById(Long id) throws URISyntaxException {
         RestTemplate restTemplate = new RestTemplate();
-        final String url = "http://" + usersServiceHost + ":" + usersServicePort + "/api/users/followedUsers";
+        final String url = "http://" + usersServiceHost + ":" + usersServicePort + "/api/followers/" + id;
         URI getUserUri = new URI(url);
 
         HttpHeaders headers = new HttpHeaders();

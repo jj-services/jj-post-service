@@ -1,6 +1,9 @@
 package austral.ingsis.jjpostservice.service;
 
+import austral.ingsis.jjpostservice.connection.UserConnectionHandler;
+import austral.ingsis.jjpostservice.dto.HomePostsDto;
 import austral.ingsis.jjpostservice.dto.PostDto;
+import austral.ingsis.jjpostservice.dto.UserDto;
 import austral.ingsis.jjpostservice.exception.PostNotFoundException;
 import austral.ingsis.jjpostservice.model.Post;
 import austral.ingsis.jjpostservice.repository.PostRepository;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +25,12 @@ public class PostService {
     @PersistenceContext
     private EntityManager entityManager; //might not be needed, can be used for bulk save here?
     private PostRepository postRepository;
+    private final UserConnectionHandler userConnectionHandler;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserConnectionHandler userConnectionHandler) {
         this.postRepository = postRepository;
+        this.userConnectionHandler = userConnectionHandler;
     }
 
     public List<PostDto> getAllPosts() {
@@ -74,7 +80,15 @@ public class PostService {
         this.postRepository.deleteById(id);
     }
 
-    public List<Post> getAllPostsByFollowingIds(List<Long> userIds) {
-        return new ArrayList<>();
+    //JAJA que negrada
+    public List<HomePostsDto> getHomePostsForUser(Long userId) throws URISyntaxException {
+        List<HomePostsDto> temp = new ArrayList<>();
+        List<UserDto> users = this.userConnectionHandler.getFollowedUsersById(userId);
+        List<Post> allPosts = this.postRepository.findAll();
+        users.forEach(userDto ->
+                temp.addAll(allPosts.stream()
+                        .filter(post -> post.getUserId().equals(userDto.getId()))
+                            .map(post -> post.toHomePostsDto(userDto)).collect(Collectors.toList())));
+        return temp;
     }
 }

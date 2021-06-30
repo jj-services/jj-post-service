@@ -1,6 +1,7 @@
 package austral.ingsis.jjpostservice.controller;
 
 import austral.ingsis.jjpostservice.dto.CreatePostDto;
+import austral.ingsis.jjpostservice.dto.HomePostsDto;
 import austral.ingsis.jjpostservice.dto.PostDto;
 import austral.ingsis.jjpostservice.dto.UpdatePostDto;
 import austral.ingsis.jjpostservice.exception.PostNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,11 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
-//    @GetMapping(value = "/user/{userId}")
-//    public ResponseEntity<List<PostDto>> getAllPostsByUserId(@PathVariable Long userId) {
-//        //list user id al otro servicio
-//        List<Long> userIds = new ArrayList<>();
-//        List<PostDto> posts = this.postService.getAllPostsByFollowingIds(userIds);
-//        return new ResponseEntity<>(posts, HttpStatus.OK);
-//    }
+    @GetMapping(value = "/home/{userId}")
+    public ResponseEntity<List<HomePostsDto>> getHomePostsForUser(@PathVariable Long userId) throws URISyntaxException {
+        List<HomePostsDto> posts = this.postService.getHomePostsForUser(userId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 
     @GetMapping(value = "")
     public ResponseEntity<List<PostDto>> getAllPosts() {
@@ -55,11 +55,6 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
-
-//    @GetMapping(value = "/{userId}")
-//    public ResponseEntity<List<PostDto>> getAllPostsByUserId(@PathVariable Long userId) {
-//        List<PostDto> posts = this.postService.getAllPostsByUserId(userId);
-//    }
 
     @PutMapping(value = "")
     public ResponseEntity<PostDto> updatePost(@RequestBody UpdatePostDto dto) {

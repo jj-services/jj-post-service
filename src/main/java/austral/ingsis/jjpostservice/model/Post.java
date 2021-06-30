@@ -1,6 +1,8 @@
 package austral.ingsis.jjpostservice.model;
 
+import austral.ingsis.jjpostservice.dto.HomePostsDto;
 import austral.ingsis.jjpostservice.dto.PostDto;
+import austral.ingsis.jjpostservice.dto.UserDto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -55,5 +57,9 @@ public class Post {
 
     public PostDto toPostDto() {
         return new PostDto(this.id, this.text, this.userId);
+    }
+
+    public HomePostsDto toHomePostsDto(UserDto userDto){
+        return new HomePostsDto(new PostDto(this.id,this.text, this.userId), userDto);
     }
 }

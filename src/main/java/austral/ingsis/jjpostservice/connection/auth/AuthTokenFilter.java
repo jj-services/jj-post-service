@@ -8,6 +8,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
@@ -42,7 +46,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             if (optCookie.isEmpty()) throw new AuthenticationException("Cookie should not be empty");
             UserDto userDto = this.validateUserAuthentication(optCookie.get().getValue());
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDto, optCookie.get().getValue());
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(new SimpleGrantedAuthority("USER"));
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDto, optCookie.get().getValue(), authorities);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e){
             response.sendError(401, "Cannot set user authentication: " + e.getMessage());

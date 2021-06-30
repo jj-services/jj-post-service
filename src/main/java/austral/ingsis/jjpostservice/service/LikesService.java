@@ -36,17 +36,6 @@ public class LikesService {
         return this.likesRepository.save(likeRelation).toLikeDto();
     }
 
-    public void unlikePostByRelationId(Long id) {
-        Optional<Likes> likeRelation = this.likesRepository.findById(id);
-
-        if (likeRelation.isEmpty()) {
-            throw new PostNotFoundException("Like relation of id: " + id + "not found.");
-        }
-
-        this.likesRepository.deleteById(id);
-    }
-
-    //TODO FIX ME es un asco esta api (ahora mira lo lindo que es ese codigo)
     public void unlikePostByBothIds(Long postId, Long likedByUserId) {
         Optional<Likes> likeRelation = this.likesRepository.findAll()
                 .stream().filter(relation -> (relation.getPostId().equals(postId) && relation.getLikedByUserId().equals(likedByUserId))).findFirst();

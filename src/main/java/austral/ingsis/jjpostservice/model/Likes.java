@@ -52,6 +52,7 @@ public class Likes {
         this.likedByUserId = likedByUserId;
     }
 
+
     public LikeDto toLikeDto() {
         return new LikeDto(this.postId, this.likedByUserId);
     }

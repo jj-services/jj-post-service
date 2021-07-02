@@ -5,7 +5,7 @@ spring:
   datasource:
     platform: postgres
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db-posts:5434/jibberjabberdb_posts
+    url: jdbc:postgresql://db-posts:5432/jibberjabberdb_posts
     username: jibberjabber
     password: jibberjabber
     initialization-mode: always

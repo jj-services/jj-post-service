@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,11 +82,13 @@ public class PostService {
     public List<HomePostsDto> getHomePostsForUser(Long userId) throws URISyntaxException {
         List<HomePostsDto> temp = new ArrayList<>();
         List<UserDto> users = this.userConnectionHandler.getFollowedUsersById(userId);
+        users.add(this.userConnectionHandler.getUserInfoFromId(userId));
         List<Post> allPosts = this.postRepository.findAll();
         users.forEach(userDto ->
                 temp.addAll(allPosts.stream()
                         .filter(post -> post.getUserId().equals(userDto.getId()))
                             .map(post -> post.toHomePostsDto(userDto)).collect(Collectors.toList())));
+        temp.sort(Comparator.comparing(p -> p.getPostDto().getPostId()));
         return temp;
     }
 }

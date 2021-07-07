@@ -35,3 +35,20 @@ jobs:
           file: ./Dockerfile.multi
           push: true
           tags: docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
+          
+  azure-cd:
+    needs: build_and_push_to_registry
+    name: Deploy to Azure VM prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connecting with SSH to Azure VM
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.PROD_VM_USERNAME }}
+          host: 40.117.233.69
+          key: ${{ secrets.PROD_VM_KEY }}
+          script: |
+            cd jj-infra
+            sudo docker stop jj-posts
+            sudo docker pull docker.pkg.github.com/jj-services/jj-post-service/prod-jj-post-service:latest
+            sudo docker-compose up -d jj-posts

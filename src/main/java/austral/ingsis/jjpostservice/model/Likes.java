@@ -1,15 +1,13 @@
 package austral.ingsis.jjpostservice.model;
 
-import austral.ingsis.jjpostservice.dto.HomePostsDto;
-import austral.ingsis.jjpostservice.dto.PostDto;
-import austral.ingsis.jjpostservice.dto.UserDto;
+import austral.ingsis.jjpostservice.dto.LikeDto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "post")
-public class Post {
+@Table(name = "likes")
+public class Likes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceUserGenerator")
@@ -24,19 +22,11 @@ public class Post {
     )
     private Long id;
 
-    @Column(name = "text")
-    private String text;
+    @Column(name = "post_id")
+    private Long postId;
 
-    @Column(name = "user_id")
-    private Long userId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    @Column(name = "liked_by_user_id")
+    private Long likedByUserId;
 
     public Long getId() {
         return id;
@@ -46,20 +36,23 @@ public class Post {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public Long getPostId() {
+        return postId;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 
-
-    public PostDto toPostDto() {
-        return new PostDto(this.id, this.text, this.userId);
+    public Long getLikedByUserId() {
+        return likedByUserId;
     }
 
-    public HomePostsDto toHomePostsDto(UserDto userDto){
-        return new HomePostsDto(new PostDto(this.id,this.text, this.userId), userDto);
+    public void setLikedByUserId(Long likedByUserId) {
+        this.likedByUserId = likedByUserId;
+    }
+
+    public LikeDto toLikeDto() {
+        return new LikeDto(this.postId, this.likedByUserId);
     }
 }

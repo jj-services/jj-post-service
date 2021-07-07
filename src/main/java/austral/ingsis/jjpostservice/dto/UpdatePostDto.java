@@ -3,13 +3,14 @@ package austral.ingsis.jjpostservice.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-public class CreatePostDto {
+public class UpdatePostDto {
+
     @NotEmpty
     @Size(max= 140, min =1, message = "post content should not exceed 140 characters")
     private String text;
 
-    //@NotEmpty todo
-    private Long userId;
+    @NotEmpty
+    private Long postId;
 
     public String getText() {
         return text;
@@ -19,11 +20,11 @@ public class CreatePostDto {
         this.text = text;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getPostId() {
+        return postId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 }
